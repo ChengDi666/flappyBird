@@ -1,6 +1,6 @@
 //  各种图片的父类
 
-import { DataStore } from "./js/base/DataStore.js";
+import { DataStore } from "./DataStore.js";
 
 export class Sprite{
     //  图，图的横,纵坐标，图的宽,高，画的横,纵坐标,画的宽,高
@@ -25,7 +25,7 @@ export class Sprite{
     }
 
     //  获取指定图片
-    static detImage(key){
+    static getImage(key){
         return DataStore.getInstance().res.get(key);
     }
 }
