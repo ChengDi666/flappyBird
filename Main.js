@@ -6,13 +6,15 @@ import { Background } from "./js/runtime/Background.js";
 import { Land } from "./js/runtime/Land.js";
 import { Director } from "./js/Director.js";
 import { Birds } from "./js/plare/Birds.js";
+import { StartButton } from "./js/plare/StartButton.js";
+import { Score } from "./js/plare/Score.js";
 
 export class Main{
     constructor(){
         console.log('游戏开始了');
         //  初始化画布
-        // this.canvas = document.getElementById('game');
-        this.canvas = wx.createCanvas();
+        this.canvas = document.getElementById('game');
+        // this.canvas = wx.createCanvas();
         this.ctx = this.canvas.getContext('2d');
         //  初始化资源加载器
         this.loader = new ResourceLoader();
@@ -43,6 +45,9 @@ export class Main{
 
     //  游戏初始化,游戏中的数据，将其保存在变量池中
     init(){
+        //  将游戏结束改为false
+        this.director.isGameOver = false;
+
         //  模拟画背景图
         // new Background().draw()
         // new Land().draw()
@@ -50,12 +55,31 @@ export class Main{
         this.dataStore.set('background',new Background())
                        .set('land',new Land())
                        .set('pipes',[])
-                       .set('birds',new Birds);
+                       .set('birds',new Birds())
+                       .set('startButton',new StartButton())
+                       .set('score',new Score());
 
+        //  调用单击事件的方法
+        this.gameEvent();
+        
         //  先创建一组水管
         this.director.createPipes();
 
         //  开始运行
         this.director.run();
     }
+
+    //  绑定单击事件
+    gameEvent() {
+        this.canvas.addEventListener('touchstart',e=>{
+            if(this.director.isGameOver){
+                //  游戏结束,点击重新开始。
+                this.init();
+            }else{
+                //  游戏未结束，点击触发小鸟向上飞一段距离
+                this.director.birdsUp();
+            }
+        });
+    }
+
 }

@@ -29,11 +29,25 @@ export class Birds extends Sprite{
     }
 
     draw() {
+        //  小鸟的状态切换(翅膀方向的切换))
         this.count+=0.1;
         if(this.index>=2){
             this.count=0;
         }
         this.index = Math.floor(this.count);
+
+        //  小鸟自由落体运动
+        const g = 0.08; //  模拟的重量加速度
+        //  小鸟向上的位移量
+        const Y = 50;
+        //  小鸟下落的距离
+        const offsetY = (g*this.time*(this.time - Y))/2;
+        for(let i = 0;i < 3;i++){
+            this.birdsY[i] = this.y[i] + offsetY;
+        }
+        this.time++;
+
+
         super.draw(this.img,this.clippingX[this.index],this.clippingY[this.index],
                    this.clippingWidth[this.index],this.clippingHeight[this.index],
                    this.birdsX[this.index],this.birdsY[this.index],
