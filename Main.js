@@ -8,13 +8,16 @@ import { Director } from "./js/Director.js";
 import { Birds } from "./js/plare/Birds.js";
 import { StartButton } from "./js/plare/StartButton.js";
 import { Score } from "./js/plare/Score.js";
+import { Tool } from "./extra.js";
 
 export class Main{
     constructor(){
         console.log('游戏开始了');
+        const t = new Tool();
+        t.playMusic('./audio/bgm.mp3', true).play();
         //  初始化画布
-        this.canvas = document.getElementById('game');
-        // this.canvas = wx.createCanvas();
+        // this.canvas = document.getElementById('game');
+        this.canvas = wx.createCanvas();
         this.ctx = this.canvas.getContext('2d');
         //  初始化资源加载器
         this.loader = new ResourceLoader();
@@ -22,13 +25,12 @@ export class Main{
         this.dataStore = DataStore.getInstance();
         //  初始化导演
         this.director = Director.getInstance();
-
         //  加载完成后执行其他的操作
         this.loader.onloaded(map=> this.onResourceLoaded(map));
     }
     //  资源加载完成后执行，其他操作的方法
     onResourceLoaded(map){
-        console.log(map);
+        // console.log(map);
         //  模拟化背景图
         // let bg = map.get("background"); //  那背景图片
         // this.ctx.drawImage(bg,0,0,bg.width,bg.height,0,0,this.canvas.width,this.canvas.height);
@@ -40,7 +42,11 @@ export class Main{
         this.dataStore.canvas = this.canvas;
         this.dataStore.ctx = this.ctx;
         this.dataStore.res = map;
+        const t = new Tool();
+        t.getTelInfo();
+        t.getUserInfo();
         this.init();
+
     }
 
     //  游戏初始化,游戏中的数据，将其保存在变量池中
@@ -48,6 +54,8 @@ export class Main{
         //  将游戏结束改为false
         this.director.isGameOver = false;
 
+        //  
+        new Tool();
         //  模拟画背景图
         // new Background().draw()
         // new Land().draw()
@@ -71,7 +79,8 @@ export class Main{
 
     //  绑定单击事件
     gameEvent() {
-        this.canvas.addEventListener('touchstart',e=>{
+        // this.canvas.addEventListener('touchstart',e=>{
+          wx.onTouchStart(res=>{
             if(this.director.isGameOver){
                 //  游戏结束,点击重新开始。
                 this.init();

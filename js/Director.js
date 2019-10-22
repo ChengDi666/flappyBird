@@ -1,6 +1,7 @@
 import { DataStore } from "./base/DataStore.js";
 import { UpPipe } from "./runtime/UpPipe.js";
 import { DownPipe } from "./runtime/DownPipe.js";
+import { Tool } from "../extra.js";
 
 //  导演类，控制游戏的主流程逻辑
 
@@ -71,7 +72,9 @@ export class Director{
         //  小鸟越过水管没有撞上  当前可以加分状态  加分
         //  越过的肯定是第一组水管 ,判断小鸟和第一组水管的位置关系
         if(birds.birdsX[0] > pipes[0].x + pipes[0].width && score.canAdd) {
-            score.score++;
+            const t = new Tool();
+            t.playMusic('../audio/bullet.mp3',false).play();
+            score.score+=100;
             //  改变加分状态，为不可加
             score.canAdd = false;
         }
@@ -129,8 +132,6 @@ export class Director{
             //  画小鸟
             this.dataStore.get('birds').draw();
 
-
-
             //  画地板
             this.dataStore.get('land').draw();
 
@@ -140,8 +141,18 @@ export class Director{
             //  循环运行
             this.id =  requestAnimationFrame(()=> this.run());
         }else{
+            let t = new Tool();
+            t.zhendong();
             //  游戏结束，停止循环渲染
             cancelAnimationFrame(this.id);
+            //  游戏结束，重新渲染一次，避免安卓贴图错乱
+            this.dataStore.get('background').draw();
+            this.dataStore.get('pipes').forEach(p=>{
+              p.draw();
+            });
+            this.dataStore.get('land').draw();
+            this.dataStore.get('birds').draw();
+            this.dataStore.get('score').draw();
             //  画结束按钮
             this.dataStore.get('startButton').draw();
             //  销毁睡觉

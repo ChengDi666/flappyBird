@@ -13,6 +13,6 @@ export class Score {
     draw() {
         this.ctx.font = "30px 黑体";
         this.ctx.fillStyle = 'red';
-        this.ctx.fillText(this.score,this.canvas.width/2,40);
+        this.ctx.fillText(this.score,this.canvas.width/2,60);
     }
 }
